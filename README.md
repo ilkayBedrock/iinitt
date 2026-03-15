@@ -14,3 +14,9 @@ $ gcc iinitt.c -o iinitt
 '# chmod 777 /sbin/iinitt
 !!@!! then boot with the kernel parameters:
 init=/sbin/iinitt
+
+# installation of the scripts (reboot & poweroff)
+!!@!! compile them, following the install guide
+@ move them to /sbin:
+'# mv reboot /sbin && mv poweroff /sbin
+!!@!! if 'reboot' and 'poweroff' exists, move them with another name
