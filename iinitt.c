@@ -51,9 +51,9 @@ void start_getty() {
     if (pid == 0) {
         execl("/sbin/agetty",
               "agetty",
+              "--noreset",
               "--noclear",
-              "tty1",
-              "115200",
+              "--issue-file=/etc/issue:/etc/issue.d:/run/issue.d:/usr/lib/issue.d - ${TERM}",
               NULL);
         perror("agetty");
         exit(1);
