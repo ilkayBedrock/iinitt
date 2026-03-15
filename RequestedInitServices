@@ -1,0 +1,10 @@
+// Ilkay Alakay <ilkayxda@aol.com>
+// Do you want ^^^^^^^^^^^^^^^^^^^^
+// to have yo-
+// ur project
+// here? Mail.
+
+// Add these to iinitt.c's services line
+
+// Hela - av2xn \\
+start_service("/usr/local/bin/hela-watchdog.sh");
