@@ -50,7 +50,7 @@ void start_getty() {
 
 int main() {
     # showcase to iinitt (version etc...) and clearing old outputs
-    system("clear"); # achived by stdlib.h. please contact me if you do see/seen any errors
+    system("clear"); # achieved by stdlib.h. please contact me if you do see/seen any errors
     printf("iinitt v0.0.1: ilkay STARTING...\n");
     # showcase and clear parts: end; filesystem mounting: if your service requires another partmount, add that here
        # partname # mountpoint # servname # folder permission (if needed)
