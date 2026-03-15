@@ -1,7 +1,7 @@
 # iinitt
 ilkay(s/own) init
 a init without runlevels, and with only one configuration file
-!! you need eudev (https://github.com/ilkayBedrock/eudev-iinitt) and your own hardware modules, the init does not have any modprobing protocols/services. first generate a machine id before using this init. dbus requires one !!
+!! you need eudev (https://github.com/ilkayBedrock/eudev-iinitt) and your own hardware modules, the init does not have any modprobing protocols/services. systemd-tools also in dependencies. first generate a machine id before using this init. dbus requires one !!
 
 # installation
 i dont know to write Makefiles... manual install this piece of shi
