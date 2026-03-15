@@ -87,7 +87,7 @@ int main() {
     signal(SIGPIPE, SIG_IGN);
     // showcase to iinitt (version etc...) and clearing old outputs
     printf("\033[2J\033[H");
-    printf("iinitt v0.0.1: ilkay STARTING...\n");
+    printf("iinitt v0.0.2: ilkay STARTING...\n");
     // showcase and clear parts: end; filesystem mounting: if your service requires another partmount, add that here
      //  # partname # mountpoint # servname # folder permission (if needed)
     mount("proc", "/proc", "proc", 0, "");
