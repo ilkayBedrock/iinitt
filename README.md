@@ -1,6 +1,6 @@
 # iinitt
 ilkay(s/own) init
-a init without runlevels, and with only one configuration file
+a suckless init without runlevels, and with only one configuration file
 !! you need eudev (https://github.com/ilkayBedrock/eudev-iinitt) and your own hardware modules, the init does not have any modprobing protocols/services. systemd-tools also in dependencies. set your hostname either, i did not coded a hostname changer. first generate a machine id before using this init. dbus requires one. ELogind is also a need for TTYs and/or DE/WM sessions. !!
 
 # installation
