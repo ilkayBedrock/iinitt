@@ -20,3 +20,6 @@ init=/sbin/iinitt
 @ move them to /sbin:
 '# mv reboot /sbin && mv poweroff /sbin
 !!@!! if 'reboot' and 'poweroff' exists, move them with another name
+
+# wiki
+https://iinitt.nekoweb.org/
