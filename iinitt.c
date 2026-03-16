@@ -94,7 +94,6 @@ int main() {
     printf("\033[2J\033[H");
     printf("iinitt v5.0.0: ilkay STARTING...\n");
     umask(022);
-    sethostname("your_hostname", strlen("your_hostname"));
     setsid();
     // showcase and clear parts: end; filesystem mounting: if your service requires another partmount, add that here
     //  # partname # mountpoint # servname # folder permission (if needed)
@@ -126,15 +125,17 @@ int main() {
         exit(1);
     }
     printf("filesystems, eudev daemon and /run dir mounted/started successfully\n");
-    // add your services to here
+    // add your services to end of the section
     start_dbus();
     sleep(1);
-    start_service("/usr/sbin/NetworkManager");
+    start_service("/usr/sbin/NetworkManager"); // this line is optional, delete or comment it if you dont have/want network[NetworkManager]
     sleep(2);
     start_service("/usr/libexec/elogind");
     sleep(1);
     start_service("/bin/bash");
-
+    start_service("/usr/bin/syslog-ng"); // this line is optional, delete or comment it if you dont have/want logger[syslog-ng]
+    start_service("/usr/bin/chronyd"); // edit the /etc/chrony.conf, but the daemon itself can run without configuration. this line is optional btw, delete or comment it if you dont have/want time sync[chronyd]
+    start_service("/usr/bin/crond"); // this line is optional, delete or comment it if you dont have/want/[replace it with alternatives] cron daemon[crond]
     signal(SIGTERM, handle_signal);
     signal(SIGINT, handle_signal);
     reboot(RB_ENABLE_CAD);
