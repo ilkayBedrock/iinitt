@@ -92,7 +92,7 @@ int main() {
     signal(SIGPIPE, SIG_IGN);
     // showcase to iinitt (version etc...) and clearing old outputs
     printf("\033[2J\033[H");
-    printf("iinitt v0.0.2: ilkay STARTING...\n");
+    printf("iinitt v5.0.0: ilkay STARTING...\n");
     umask(022);
     sethostname("your_hostname", strlen("your_hostname"));
     setsid();
