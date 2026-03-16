@@ -121,6 +121,9 @@ int main() {
     start_dbus();
     sleep(1);
     start_service("/usr/sbin/NetworkManager");
+    sleep(2);
+    start_service("/usr/libexec/elogind");
+    sleep(1);
     start_service("/bin/bash");
 
     signal(SIGTERM, handle_signal);
