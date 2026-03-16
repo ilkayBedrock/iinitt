@@ -97,7 +97,8 @@ int main() {
     sethostname("your_hostname", strlen("your_hostname"));
     setsid();
     // showcase and clear parts: end; filesystem mounting: if your service requires another partmount, add that here
-     //  # partname # mountpoint # servname # folder permission (if needed)
+    //  # partname # mountpoint # servname # folder permission (if needed)
+    // --------------------------------------------------------------------
     mount("proc", "/proc", "proc", 0, "");
     mount("sysfs", "/sys", "sysfs", 0, "");
     mount("devtmpfs", "/dev", "devtmpfs", 0, "");
@@ -145,4 +146,5 @@ int main() {
     }
     sleep(1);
     }
+
 }
