@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <sys/reboot.h>
+#include <string.h>
 
 // the main service starter function, do not touch anything on here
 void start_service(char *path) {
@@ -61,13 +62,17 @@ void start_getty() {
 }
 
 void do_reboot() {
-    write(1, "iinitt: rebooting...\n", 17);
+    write(1, "iinitt: rebooting...\n", strlen("iinitt: rebooting...\n"));
+    sync();
+    mount(NULL, "/", NULL, MS_REMOUNT | MS_RDONLY, NULL);
     sync();
     reboot(RB_AUTOBOOT);
 }
 
 void do_poweroff() {
-    write(1, "iinitt: shut downing root...\n", 17);
+    write(1, "iinitt: shut downing root...\n", strlen("iinitt: shut downing root...\n"));
+    sync();
+    mount(NULL, "/", NULL, MS_REMOUNT | MS_RDONLY, NULL);
     sync();
     reboot(RB_POWER_OFF);
 }
@@ -88,6 +93,9 @@ int main() {
     // showcase to iinitt (version etc...) and clearing old outputs
     printf("\033[2J\033[H");
     printf("iinitt v0.0.2: ilkay STARTING...\n");
+    umask(022);
+    sethostname("your_hostname", strlen("your_hostname"));
+    setsid();
     // showcase and clear parts: end; filesystem mounting: if your service requires another partmount, add that here
      //  # partname # mountpoint # servname # folder permission (if needed)
     mount("proc", "/proc", "proc", 0, "");
@@ -131,9 +139,10 @@ int main() {
     reboot(RB_ENABLE_CAD);
 
     while (1) {
-    pid_t pid = wait(NULL);
-    printf("process %d exited\n", pid);
+    pid_t pid;
+    while ((pid = waitpid(-1, NULL, WNOHANG)) > 0) {
+        printf("process %d exited\n", pid);
     }
-
-    return 0;
+    sleep(1);
+    }
 }
