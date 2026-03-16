@@ -11,6 +11,8 @@
 #include <sys/reboot.h>
 #include <string.h>
 
+// funtionstab (void)
+// -----------------
 // the main service starter function, do not touch anything on here
 void start_service(char *path) {
     pid_t pid = fork();
@@ -130,7 +132,7 @@ int main() {
     sleep(1);
     start_service("/usr/sbin/NetworkManager"); // this line is optional, delete or comment it if you dont have/want network[NetworkManager]
     sleep(2);
-    start_service("/usr/libexec/elogind");
+    start_service("/usr/libexec/elogind"); // you can use ConsoleKit/seatd, but ConsoleKit is a **old** idea. consider using seatd if you are on wayland
     sleep(1);
     start_service("/bin/bash");
     start_service("/usr/bin/syslog-ng"); // this line is optional, delete or comment it if you dont have/want logger[syslog-ng]
