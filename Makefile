@@ -9,9 +9,10 @@ program3: poweroff.c
 
 install: all
 	mkdir -p /sbin
-	cp iinitt /sbin/
-	cp reboot /sbin/
-	cp poweroff /sbin/
+	mv iinitt /sbin/
+	mv reboot /sbin/
+	mv poweroff /sbin/
+	chmod 777 /sbin/{iinitt,reboot,poweroff}
 
 clean:
 	rm -rf /sbin/iinitt /sbin/reboot /sbin/poweroff
