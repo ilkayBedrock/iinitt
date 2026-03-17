@@ -14,9 +14,9 @@
 // funtionstab (void)
 // -----------------
 // the main service starter function, do not touch anything on here
-void start_service(char *path) {
+void start_service(char *path){
     pid_t pid = fork();
-    if (pid < 0) {
+    if (pid < 0){
     perror("fork failed");
     exit(1);
     }
@@ -28,13 +28,13 @@ void start_service(char *path) {
 }
 
 // dbus requires special flags to run at the SYSROOT level
-void start_dbus() {
+void start_dbus(){
     pid_t pid = fork();
     if (pid < 0) {
     perror("fork failed");
     exit(1);
     }
-    if (pid == 0) {
+    if (pid == 0){
         execl("/usr/bin/dbus-daemon",
               "dbus-daemon",
               "--system",
@@ -45,13 +45,13 @@ void start_dbus() {
 }
 
 // agetty (getty) starter - i do personally not use getty or any CON manager, just bash/fish/sh. the service lines are configured like this. delete the line which contains "start_service("/bin/bash");" and replace it with: start_getty();
-void start_getty() {
+void start_getty(){
     pid_t pid = fork();
     if (pid < 0) {
     perror("fork failed");
     exit(1);
     }
-    if (pid == 0) {
+    if (pid == 0){
         execl("/sbin/agetty",
               "agetty",
               "--noreset",
@@ -63,7 +63,7 @@ void start_getty() {
     }
 }
 
-void do_reboot() {
+void do_reboot(){
     write(1, "iinitt: rebooting...\n", strlen("iinitt: rebooting...\n"));
     sync();
     mount(NULL, "/", NULL, MS_REMOUNT | MS_RDONLY, NULL);
@@ -71,7 +71,7 @@ void do_reboot() {
     reboot(RB_AUTOBOOT);
 }
 
-void do_poweroff() {
+void do_poweroff(){
     write(1, "iinitt: shut downing root...\n", strlen("iinitt: shut downing root...\n"));
     sync();
     mount(NULL, "/", NULL, MS_REMOUNT | MS_RDONLY, NULL);
@@ -79,18 +79,18 @@ void do_poweroff() {
     reboot(RB_POWER_OFF);
 }
 
-void handle_signal(int sig) {
+void handle_signal(int sig){
 
-    if (sig == SIGTERM) {
+    if (sig == SIGTERM){
         do_poweroff();
     }
 
-    if (sig == SIGINT) {
+    if (sig == SIGINT){
         do_reboot();
     }
 }
 
-int main() {
+int main(){
     signal(SIGPIPE, SIG_IGN);
     // showcase to iinitt (version etc...) and clearing old outputs
     printf("\033[2J\033[H");
@@ -110,18 +110,18 @@ int main() {
     mkdir("/run/dbus", 0755);
     mkdir("/dev/pts", 0755);
     mount("devpts", "/dev/pts", "devpts", 0, "");
-    if (fork() == 0) {
+    if (fork() == 0){
     	execl("/sbin/udevd", "udevd", "--daemon", NULL);
     	perror("udevd");
     	exit(1);
     }
     sleep(1);
-    if (fork() == 0) {
+    if (fork() == 0){
     	execl("/sbin/udevadm", "udevadm", "trigger", "--action=add", NULL);
     	perror("udevadm trigger");
     	exit(1);
     }
-    if (fork() == 0) {
+    if (fork() == 0){
         execl("/sbin/udevadm", "udevadm", "settle", NULL);
         perror("udevadm settle");
         exit(1);
@@ -143,9 +143,9 @@ int main() {
     signal(SIGINT, handle_signal);
     reboot(RB_ENABLE_CAD);
 
-    while (1) {
+    while (1){
     pid_t pid;
-    while ((pid = waitpid(-1, NULL, WNOHANG)) > 0) {
+    while ((pid = waitpid(-1, NULL, WNOHANG)) > 0){
         printf("process %d exited\n", pid);
     }
     sleep(1);
