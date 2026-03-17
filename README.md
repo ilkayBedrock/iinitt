@@ -7,7 +7,7 @@ also installing systemd (still set your init to /sbin/iinitt or create a symlink
 # installation
 !!!! i did learnt how to write makefiles
 make -j$(nproc) && (#) make install
---i dont know how to write Makefiles... manual install this piece of shi--
+<s>i dont know how to write Makefiles... manual install this piece of shi</s>
 @ first compile the code:
 $ gcc iinitt.c -o iinitt
 @ then move the init executable to /sbin:
