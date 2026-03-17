@@ -138,6 +138,7 @@ int main() {
     start_service("/usr/bin/syslog-ng"); // this line is optional, delete or comment it if you dont have/want logger[syslog-ng]
     start_service("/usr/bin/chronyd"); // edit the /etc/chrony.conf, but the daemon itself can run without configuration. this line is optional btw, delete or comment it if you dont have/want time sync[chronyd]
     start_service("/usr/bin/crond"); // this line is optional, delete or comment it if you dont have/want/[replace it with alternatives] cron daemon[crond]
+    
     signal(SIGTERM, handle_signal);
     signal(SIGINT, handle_signal);
     reboot(RB_ENABLE_CAD);
