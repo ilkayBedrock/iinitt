@@ -27,3 +27,5 @@ init=/sbin/iinitt
 
 # wiki
 https://iinitt.nekoweb.org/
+
+logos and other misc. things can be found on iinitt organization.
