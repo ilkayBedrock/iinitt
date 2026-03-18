@@ -1,6 +1,6 @@
 # iinitt
 ilkay(s/own) init
-a suckless init without runlevels, and with only one configuration file
+a suckless init - without runlevels, and with only one configuration file
 !! you need eudev (https://github.com/ilkayBedrock/eudev-iinitt) and your own hardware modules, the init does not have any modprobing protocols/services, you can use the start_service() function and auto load your modules at boot. systemd-tools also in dependencies. set your hostname either, i did not coded a hostname changer. first generate a machine id before using this init. dbus requires one. ELogind (https://github.com/ilkayBedrock/elogind-iinitt) is also a need for TTYs (the system will boot up but it will gonna use /dev/console, not a good option) and/or DE/WM sessions. !!
 also installing systemd (still set your init to /sbin/iinitt or create a symlink which when /sbin/init called, make call of iinitt) is a great idea if you are using dracut.
 
