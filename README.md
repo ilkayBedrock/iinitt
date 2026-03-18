@@ -19,7 +19,7 @@ $ gcc iinitt.c -o iinitt
 init=/sbin/iinitt
 
 # installation of the scripts (reboot & poweroff)
-!!!!! they now come with the Makefile.
+!!!!! they now come with the Makefile. no extra setting needed.
 !!@!! compile them, following the install guide
 @ move them to /sbin:
 '# mv reboot /sbin && mv poweroff /sbin
