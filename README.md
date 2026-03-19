@@ -29,4 +29,4 @@ init=/sbin/iinitt
 # wiki
 https://iinitt.nekoweb.org/
 
-logos and other misc. things can be found on iinitt organization.
+logos and other misc. things can be found on iinitt organization (https://github.com/iinitt).
