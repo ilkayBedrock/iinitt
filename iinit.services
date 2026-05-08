@@ -1,0 +1,7 @@
+enabled_disabled: /etc/iinit.d/
+run NetworkManager, /usr/sbin/NetworkManager
+run elogind, /usr/libexec/elogind
+run bash, /usr/bash
+run syslog-ng, /usr/bin/syslog-ng
+run chronyd, /usr/bin/chronyd
+run crond, /usr/bin/crond
