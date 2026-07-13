@@ -1,4 +1,4 @@
-// Ilkay Alakay <ilkayxda@aol.com>. Licensed under GNU GPLv3<.0>
+// Ilkay Alakay <ilkay@astronix.org>. Licensed under GNU GPLv3<.0>
 // requires Eudev!!! <https://github.com/ilkayBedrock/eudev-iinitt>
 #include <stdio.h>
 #include <unistd.h>
@@ -11,54 +11,45 @@
 #include <sys/reboot.h>
 #include <string.h>
 
-// funtionstab (void)
-// -----------------
-// the main service starter function, do not touch anything on here
 void start_service(char *path){
     pid_t pid = fork();
     if (pid < 0){
-    perror("fork failed");
-    exit(1);
+        perror("fork failed");
+        return;
     }
     if (pid == 0) {
+        setsid();
         execl(path, path, NULL);
         perror("exec failed");
         exit(1);
     }
 }
 
-// dbus requires special flags to run at the SYSROOT level
 void start_dbus(){
     pid_t pid = fork();
     if (pid < 0) {
-    perror("fork failed");
-    exit(1);
+        perror("fork failed");
+        return;
     }
     if (pid == 0){
-        execl("/usr/bin/dbus-daemon",
-              "dbus-daemon",
-              "--system",
-              "--nofork",
-              NULL);
+        setsid();
+        execl("/usr/bin/dbus-daemon", "dbus-daemon", "--system", "--nofork", NULL);
+        perror("dbus-daemon failed");
         exit(1);
     }
 }
 
-// agetty (getty) starter - i do personally not use getty or any CON manager, just bash/fish/sh. the service lines are configured like this. delete the line which contains "start_service("/bin/bash");" and replace it with: start_getty();
 void start_getty(){
     pid_t pid = fork();
     if (pid < 0) {
-    perror("fork failed");
-    exit(1);
+        perror("fork failed");
+        return;
     }
     if (pid == 0){
-        execl("/sbin/agetty",
-              "agetty",
-              "--noreset",
-              "--noclear",
-              "--issue-file=/etc/issue:/etc/issue.d:/run/issue.d:/usr/lib/issue.d - ${TERM}",
-              NULL);
-        perror("agetty");
+        setsid();
+        execl("/sbin/agetty", "agetty", "--noreset", "--noclear", 
+              "--issue-file=/etc/issue:/etc/issue.d:/run/issue.d:/usr/lib/issue.d - ${TERM}", NULL);
+        perror("agetty failed");
         exit(1);
     }
 }
@@ -72,7 +63,7 @@ void do_reboot(){
 }
 
 void do_poweroff(){
-    write(1, "iinitt: shut downing root...\n", strlen("iinitt: shut downing root...\n"));
+    write(1, "iinitt: shutting down root...\n", strlen("iinitt: shutting down root...\n"));
     sync();
     mount(NULL, "/", NULL, MS_REMOUNT | MS_RDONLY, NULL);
     sync();
@@ -80,11 +71,9 @@ void do_poweroff(){
 }
 
 void handle_signal(int sig){
-
     if (sig == SIGTERM){
         do_poweroff();
     }
-
     if (sig == SIGINT){
         do_reboot();
     }
@@ -92,14 +81,17 @@ void handle_signal(int sig){
 
 int main(){
     signal(SIGPIPE, SIG_IGN);
-    // showcase to iinitt (version etc...) and clearing old outputs
+    signal(SIGTERM, handle_signal);
+    signal(SIGINT, handle_signal);
+    reboot(RB_ENABLE_CAD);
+
     printf("\033[2J\033[H");
     printf("iinitt v5.4.1: ilkay STARTING...\n");
     umask(022);
-    setsid();
-    // showcase and clear parts: end; filesystem mounting: if your service requires another partmount, add that here
-    //  # partname # mountpoint # servname # folder permission (if needed)
-    // --------------------------------------------------------------------
+
+    if (mount(NULL, "/", NULL, MS_REMOUNT, NULL) < 0) {
+        perror("Failed to remount rootfs RW");
+    }
     mount("proc", "/proc", "proc", 0, "");
     mount("sysfs", "/sys", "sysfs", 0, "");
     mount("devtmpfs", "/dev", "devtmpfs", 0, "");
@@ -110,45 +102,50 @@ int main(){
     mkdir("/run/dbus", 0755);
     mkdir("/dev/pts", 0755);
     mount("devpts", "/dev/pts", "devpts", 0, "");
-    if (fork() == 0){
-    	execl("/sbin/udevd", "udevd", "--daemon", NULL);
-    	perror("udevd");
-    	exit(1);
+
+    pid_t udev_pid = fork();
+    if (udev_pid == 0){
+        execl("/sbin/udevd", "udevd", "--daemon", NULL);
+        perror("udevd");
+        exit(1);
     }
     sleep(1);
     if (fork() == 0){
-    	execl("/sbin/udevadm", "udevadm", "trigger", "--action=add", NULL);
-    	perror("udevadm trigger");
-    	exit(1);
+        execl("/sbin/udevadm", "udevadm", "trigger", "--action=add", NULL);
+        perror("udevadm trigger");
+        exit(1);
     }
+    wait(NULL);
+
     if (fork() == 0){
         execl("/sbin/udevadm", "udevadm", "settle", NULL);
         perror("udevadm settle");
         exit(1);
     }
-    printf("filesystems, eudev daemon and /run dir mounted/started successfully\n");
-    // add your services to end of the section
+    wait(NULL);
+
+    printf("Filesystems, eudev daemon and /run dir mounted/started successfully\n");
+
     start_dbus();
     sleep(1);
-    start_service("/usr/sbin/NetworkManager"); // this line is optional, delete or comment it if you dont have/want network[NetworkManager]
-    sleep(2);
-    start_service("/usr/libexec/elogind"); // you can use ConsoleKit/seatd, but ConsoleKit is a **old** idea. consider using seatd if you are on wayland
-    sleep(1);
-    start_service("/bin/bash");
-    start_service("/usr/bin/syslog-ng"); // this line is optional, delete or comment it if you dont have/want logger[syslog-ng]
-    start_service("/usr/bin/chronyd"); // edit the /etc/chrony.conf, but the daemon itself can run without configuration. this line is optional btw, delete or comment it if you dont have/want time sync[chronyd]
-    start_service("/usr/bin/crond"); // this line is optional, delete or comment it if you dont have/want/[replace it with alternatives] cron daemon[crond]
     
-    signal(SIGTERM, handle_signal);
-    signal(SIGINT, handle_signal);
-    reboot(RB_ENABLE_CAD);
+    start_service("/usr/sbin/NetworkManager"); 
+    sleep(1);
+    start_service("/usr/libexec/elogind"); 
+    sleep(1);
+    start_service("/usr/bin/syslog-ng"); 
+    start_service("/usr/bin/chronyd"); 
+    start_service("/usr/bin/crond"); 
+    start_service("/bin/bash");
 
     while (1){
-    pid_t pid;
-    while ((pid = waitpid(-1, NULL, WNOHANG)) > 0){
-        printf("process %d exited\n", pid);
-    }
-    sleep(1);
+        pid_t pid;
+        int status;
+        while ((pid = waitpid(-1, &status, WNOHANG)) > 0){
+            printf("iinitt: process %d exited\n", pid);
+        }
+        sleep(1);
     }
 
+    return 0;
 }
